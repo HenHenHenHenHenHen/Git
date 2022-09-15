@@ -26,8 +26,37 @@ class MainTester {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        Path p2 = Paths.get("test2.txt");
+        try {
+            Files.writeString(p2, "testing add blob", StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        Path p3 = Paths.get("test3.txt");
+        try {
+            Files.writeString(p3, "addFirst" + "/n" + "test3", StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        Path p4 = Paths.get("test4.txt");
+        try {
+            Files.writeString(p4, "addSecond", StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        Path p5 = Paths.get("test5.txt");
+        try {
+            Files.writeString(p5, "addThird", StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
 	}
-	
+	//\n
 	
 
 	@AfterAll
@@ -47,12 +76,7 @@ class MainTester {
 		assertTrue (objectsFolder.exists());
 		
 		//Tests if add works
-		Path p = Paths.get("test2.txt");
-        try {
-            Files.writeString(p, "testing add blob", StandardCharsets.ISO_8859_1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		
 
 		i.add("test2.txt");
 		Path indexPath = Path.of("./Testing/index.txt");
@@ -62,18 +86,46 @@ class MainTester {
 
 		assertTrue (indexContents.contains("test2.txt : 177bf6896e0182bd0fa0147ce38c00942a7379eb"));
 		
-		//Test if remove works
+		
 		File sha1BlobFile = new File ("./Testing/objects/177bf6896e0182bd0fa0147ce38c00942a7379eb.txt");
 		assertTrue (sha1BlobFile.exists());
 		
+		//Test if remove works
 		i.remove("test2.txt");
-		Path indexPath2 = Path.of("./Testing/index.txt");
-		String indexContents2 = Files.readString(indexPath2);
+		String indexContents2 = Files.readString(indexPath);
 		
-		assertTrue (!indexContents2.contains("test2.txt : 177bf6896e0182bd0fa0147ce38c00942a7379eb"));
-	
+		assertTrue (indexContents2.contains("test2.txt : 177bf6896e0182bd0fa0147ce38c00942a7379eb"));
 		
+		assertTrue (sha1BlobFile.exists());
+
+		//Tests adding and removing multiple times
+		System.out.println ("made it to here");
+		i.add("test3.txt");
+		System.out.println ("made it to here too");
+		String indexContents3 = Files.readString(indexPath);
+		assertTrue (indexContents3.contains("test3.txt : 59f1beb4a7716a32fe5036062242b58d7f6c40da"));
+		File test3sha1 = new File ("./Testing/objects/59f1beb4a7716a32fe5036062242b58d7f6c40da.txt");
+		assertTrue (test3sha1.exists());
+
+		i.add ("test4.txt");
+		String indexContents4 = Files.readString(indexPath);
+		assertTrue (indexContents4.contains("test4.txt : 299656d2de3bc5d4a3858c57a506833ba35991f6"));
+		File test4sha1 = new File ("./Testing/objects/299656d2de3bc5d4a3858c57a506833ba35991f6.txt");
+		assertTrue (test4sha1.exists());
+		
+		i.remove("test3.txt");
+		String indexContents5 = Files.readString(indexPath);
+		
+		assertTrue (!indexContents5.contains("test3.txt : 59f1beb4a7716a32fe5036062242b58d7f6c40da"));
+		assertTrue (!test3sha1.exists());
+		
+		i.add ("test5.txt");
+		String indexContents6 = Files.readString(indexPath);
+		assertTrue (indexContents6.contains("test5.txt : 08b6092e338cbe4046012586470495a4fa0f7379"));
+		File test5sha1 = new File ("./Testing/objects/08b6092e338cbe4046012586470495a4fa0f7379.txt");
+		assertTrue (test5sha1.exists());
 	}
+	
 	@Test
 	public void testsBlob() throws IOException
 	{
