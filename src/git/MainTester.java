@@ -94,9 +94,9 @@ class MainTester {
 		i.remove("test2.txt");
 		String indexContents2 = Files.readString(indexPath);
 		
-		assertTrue (indexContents2.contains("test2.txt : 177bf6896e0182bd0fa0147ce38c00942a7379eb"));
+		assertFalse (indexContents2.contains("test2.txt : 177bf6896e0182bd0fa0147ce38c00942a7379eb"));
 		
-		assertTrue (sha1BlobFile.exists());
+		assertFalse (sha1BlobFile.exists());
 
 		//Tests adding and removing multiple times
 		System.out.println ("made it to here");
